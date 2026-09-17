@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Something Special 💗</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #fff8f3;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+    .scene {
+      position: relative;
+      width: min(100vw, 768px);
+      aspect-ratio: 768 / 1536;
+      background: url("background.png") center / cover no-repeat;
+      overflow: hidden;
+    }
+
+    /* The generated background already contains the four soft boxes.
+       These live counters sit exactly over them. */
+    .countdown {
+      position: absolute;
+      left: 20.4%;
+      right: 20.4%;
+      top: 49.0%;
+      height: 8.6%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3.0%;
+      align-items: center;
+    }
+
+    .unit {
+      height: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #df7189;
+      text-shadow: 0 1px 2px rgba(255,255,255,.75);
+    }
+
+    .number {
+      font-size: clamp(25px, 5.4vw, 46px);
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: .02em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .label {
+      margin-top: 8px;
+      font-size: clamp(10px, 1.8vw, 15px);
+      color: #b9878d;
+      letter-spacing: .02em;
+    }
+
+    .error {
+      position: absolute;
+      inset: auto 10% 5%;
+      text-align: center;
+      color: #c96d83;
+      font-size: 13px;
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      .countdown {
+        top: 48.8%;
+        left: 20.2%;
+        right: 20.2%;
+      }
+      .label { margin-top: 5px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene" aria-label="Birthday countdown">
+    <section class="countdown" aria-live="polite" aria-label="Countdown to 5 January 2027">
+      <div class="unit">
+        <div class="number" id="days">000</div>
+        <div class="label">Days</div>
+      </div>
+      <div class="unit">
+        <div class="number" id="hours">00</div>
+        <div class="label">Hours</div>
+      </div>
+      <div class="unit">
+        <div class="number" id="minutes">00</div>
+        <div class="label">Minutes</div>
+      </div>
+      <div class="unit">
+        <div class="number" id="seconds">00</div>
+        <div class="label">Seconds</div>
+      </div>
+    </section>
+    <div class="error" id="error">The countdown could not be loaded.</div>
+  </main>
+
+  <script>
+    (() => {
+      const TARGET = new Date("2027-01-05T00:00:00+05:30").getTime();
+      const DESTINATION = "https://abhinavranjanchaudhari-svg.github.io/-/";
+
+      const $ = id => document.getElementById(id);
+      const daysEl = $("days");
+      const hoursEl = $("hours");
+      const minutesEl = $("minutes");
+      const secondsEl = $("seconds");
+
+      function pad(n, width) {
+        return String(Math.max(0, n)).padStart(width, "0");
+      }
+
+      function redirect() {
+        window.location.replace(DESTINATION);
+      }
+
+      function tick() {
+        const remaining = TARGET - Date.now();
+
+        if (remaining <= 0) {
+          redirect();
+          return;
+        }
+
+        const totalSeconds = Math.floor(remaining / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        daysEl.textContent = pad(days, 3);
+        hoursEl.textContent = pad(hours, 2);
+        minutesEl.textContent = pad(minutes, 2);
+        secondsEl.textContent = pad(seconds, 2);
+      }
+
+      try {
+        tick();
+        setInterval(tick, 250);
+      } catch (e) {
+        $("error").style.display = "block";
+      }
+    })();
+  </script>
+</body>
+</html>
